@@ -35,17 +35,18 @@ def login():
 def keycloak_login():
     redirect_url = url_for('authorize', _external=True).decode('utf-8')
     return redirect(keycloak_client.auth_url(redirect_uri=redirect_url))
-
+    
 
 @app.route('/authorize', methods=['GET'])
 def authorize():
     code = request.args.get('code')
     token = keycloak_client.token(code=code)
     user_info = keycloak_client.userinfo(token['access_token'])
+    if isinstance(user_info, bytes):
+        user_info = json.loads(user_info.decode('utf-8'))
     username = user_info['preferred_username']
     user_id = int(ord(username[0]) - ord('0'))
     return jsonify({'user_id': user_id})
-
 
 if __name__ == '__main__':
     port = int(os.environ.get('FLASK_PORT', 8080))
