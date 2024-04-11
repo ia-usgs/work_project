@@ -30,11 +30,13 @@ def index():
 def login():
     return render_template('login.html')
 
-
 @app.route('/keycloak-login')
 def keycloak_login():
-    redirect_url = url_for('authorize', _external=True).decode('utf-8')
+    well_known = keycloak_client.well_known()
+    print(type(well_known), well_known)  # Add this line for debugging
+    redirect_url = url_for('authorize', _external=True)
     return redirect(keycloak_client.auth_url(redirect_uri=redirect_url))
+
     
 
 @app.route('/authorize', methods=['GET'])
