@@ -57,12 +57,12 @@ def login_callback():
     )
     token_url, headers, body = token_response
     token_data = requests.post(token_url, headers=headers, data=body,
-                               auth=(os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET"))).json()
+                               auth=(os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET")), verify=False).json()
 
     # Use token to get user info
     userinfo_response = requests.get(
         os.getenv("USERINFO_URI"),
-        headers={'Authorization': f"Bearer {token_data['access_token']}"}
+        headers={'Authorization': f"Bearer {token_data['access_token']}"}, verify=False
     )
     userinfo = userinfo_response.json()
     user = User.query.filter_by(username=userinfo['preferred_username']).first()
