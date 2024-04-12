@@ -81,5 +81,6 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run(ssl_context="adhoc")  # SSL context for HTTPS, useful during development
+    with app.app_context():
+        db.create_all()
+        app.run(ssl_context="adhoc")  # SSL context for HTTPS, useful during development
