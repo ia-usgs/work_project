@@ -82,5 +82,6 @@ def logout():
 
 if __name__ == '__main__':
     with app.app_context():
+        port = int(os.environ.get('FLASK_PORT', 8080))
         db.create_all()
-        app.run(ssl_context="adhoc")  # SSL context for HTTPS, useful during development
+        app.run(port=port, host='0.0.0.0', ssl_context="adhoc")  # SSL context for HTTPS, useful during development
