@@ -49,15 +49,33 @@ def login():
 
 @app.route('/login_callback')
 def login_callback():
-    # Exchange authorization code for token
-    token_response = client.prepare_token_request(
-        os.getenv("TOKEN_URI"),
-        authorization_response=request.url,
-        redirect_uri=url_for('login_callback', _external=True)
-    )
-    token_url, headers, body = token_response
-    token_data = requests.post(token_url, headers=headers, data=body,
-                               auth=(os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET")), verify=False).json()
+    try:
+        token_response = client.prepare_token_request(
+            os.getenv("TOKEN_URI"),
+            authorization_response=request.url,
+            redirect_uri=url_for('login_callback', _external=True)
+        )
+        token_url, headers, body = token_response
+        token_data = requests.post(token_url, headers=headers, data=body,
+                                   auth=(os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET")), verify=False).json()
+
+        userinfo_response = requests.get(
+            os.getenv("USERINFO_URI"),
+            headers={'Authorization': f"Bearer {token_data['access_token']}"}, verify=False
+        )
+        userinfo = userinfo_response.json()
+    except Exception as e:
+        app.logger.error("Failed to authenticate or fetch user data: %s", str(e))
+        return "Authentication failed", 500
+
+    user = User.query.filter_by(username=userinfo['preferred_username']).first()
+    if not user:
+        user = User(username=userinfo['preferred_username'])
+        db.session.add(user)
+        db.session.commit()
+
+    login_user(user)
+    return redirect(url_for('index'))
 
     # Use token to get user info
     userinfo_response = requests.get(
