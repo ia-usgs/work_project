@@ -1,94 +1,55 @@
 import os
-from flask import Flask, redirect, url_for, session, request, jsonify, render_template
-from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from oauthlib.oauth2 import WebApplicationClient
-import requests
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
+from flask import Flask, jsonify, render_template, redirect, request, url_for
+from flask_sqlalchemy import SQLAlchemy
+from keycloak import KeycloakOpenID
 
-# Flask app setup
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY") or "SUPER SECRET"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:kali@localhost/irvindb'
+db = SQLAlchemy(app)
 
-# Flask-Login setup
-login_manager = LoginManager(app)
-login_manager.init_app(app)
+keycloak_client = KeycloakOpenID(
+    server_url="https://pacer-dev.northgrum.com",
+    client_id="pacer-dev",
+    realm_name="developer",
+    client_secret_key="redhatsso"
+)
 
-# OAuth2 client setup
-client = WebApplicationClient(os.getenv("CLIENT_ID"))
 
-# Dummy user database
-users = {}
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
 
-# User session management setup
-@login_manager.user_loader
-def load_user(user_id):
-    return users.get(user_id)
 
-# Flask routes
 @app.route('/')
 def index():
-    if current_user.is_authenticated:
-        return render_template('dashboard.html', user=current_user)
-    else:
-        return '<a href="/login">Login</a>'
+    return render_template('login.html')
+
 
 @app.route('/login')
 def login():
-    # Find out what URL to hit for Keycloak login
-    request_uri = client.prepare_request_uri(
-        os.getenv("AUTH_URI"),
-        redirect_uri=request.base_url + "/callback",
-        scope=["openid", "email", "profile"],
-    )
-    return redirect(request_uri)
+    return render_template('login.html')
 
-@app.route('/login/callback')
-def callback():
-    # Get authorization code Keycloak sent back to you
-    code = request.args.get("code")
+@app.route('/keycloak-login')
+def keycloak_login():
+    well_known = keycloak_client.well_known()
+    print(type(well_known), well_known)  # Add this line for debugging
+    redirect_url = url_for('authorize', _external=True)
+    return redirect(keycloak_client.auth_url(redirect_uri=redirect_url))
 
-    # Prepare and send a request to get tokens
-    token_url, headers, body = client.prepare_token_request(
-        os.getenv("TOKEN_URI"),
-        authorization_response=request.url,
-        redirect_url=request.base_url,
-        code=code
-    )
-    token_response = requests.post(
-        token_url,
-        headers=headers,
-        data=body,
-        auth=(os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET")),
-    )
+    
 
-    # Parse the tokens!
-    client.parse_request_body_response(json.dumps(token_response.json()))
+@app.route('/authorize', methods=['GET'])
+def authorize():
+    code = request.args.get('code')
+    token = keycloak_client.token(code=code)
+    user_info = keycloak_client.userinfo(token['access_token'])
+    if isinstance(user_info, bytes):
+        user_info = json.loads(user_info.decode('utf-8'))
+    username = user_info['preferred_username']
+    user_id = int(ord(username[0]) - ord('0'))
+    return jsonify({'user_id': user_id})
 
-    # Now that you have tokens (access_token and optionally refresh_token),
-    # you need to get the user's profile and create a user session
-    userinfo_response = requests.get(
-        os.getenv("USERINFO_URI"),
-        headers={'Authorization': 'Bearer ' + token_response.json()["access_token"]}
-    )
-
-    userinfo = userinfo_response.json()
-    unique_id = userinfo["sub"]
-    users[unique_id] = userinfo  # This could be more complex in a real app
-
-    # Begin user session by logging the user in
-    login_user(users[unique_id])
-
-    return redirect(url_for("index"))
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for("index"))
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     port = int(os.environ.get('FLASK_PORT', 8080))
-    app.run(port=port, host='0.0.0.0', ssl_context="adhoc", debug=True)  # SSL context for HTTPS
+    app.run(port=port, host='0.0.0.0')
