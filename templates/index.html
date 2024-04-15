@@ -15,10 +15,11 @@
         <tbody>
             {% for table in tables %}
             <tr>
-                <td>{{ table }}</td>
+                <td><a href="{{ url_for('table_detail', table_name=table) }}">{{ table }}</a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </body>
 </html>
+
