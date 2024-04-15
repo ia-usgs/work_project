@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from keycloak import KeycloakOpenID
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:kali@172.30.30.9/irvindb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:kali@localhost/irvindb'
 db = SQLAlchemy(app)
 
 keycloak_client = KeycloakOpenID(
@@ -51,12 +51,23 @@ def authorize():
     user_id = int(ord(username[0]) - ord('0'))
     return jsonify({'user_id': user_id})
 
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    email = db.Column(db.String(50))
+
 @app.route('/table_data/users')
 def table_data():
-    table = db.metadata.tables['users']
-    columns = ','.join(column.name for column in table.columns)
-    query = f'SELECT {columns} FROM {table}'
-    data = db.engine.execute(query)
+    users = User.query.all()
+    table_data = []
+    for user in users:
+        table_data.append({
+            'id': user.id,
+            'name': user.name,
+            'email': user.email
+        })
+    return jsonify(table_data)
 
 if __name__ == '__main__':
     port = int(os.environ.get('FLASK_PORT', 8080))
