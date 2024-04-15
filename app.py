@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import Flask, jsonify, render_template, redirect, request, url_for
@@ -50,6 +51,13 @@ def authorize():
     user_id = int(ord(username[0]) - ord('0'))
     return jsonify({'user_id': user_id})
 
+@app.route('/table_data/users')
+def table_data():
+    table = db.metadata.tables['users']
+    columns = ','.join(column.name for column in table.columns)
+    query = f'SELECT {columns} FROM {table}'
+    data = db.engine.execute(query)
+
 if __name__ == '__main__':
     port = int(os.environ.get('FLASK_PORT', 8080))
-    app.run(port=port, host='0.0.0.0')
+    app.run(port=port, host='0.0.0.0', debug=True)
