@@ -1,105 +1,55 @@
-from flask import Flask, redirect, url_for, render_template, session, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
-from oauthlib.oauth2 import WebApplicationClient
 import os
 
-# Load environment variables
-from dotenv import load_dotenv
-import requests
-load_dotenv()
+from flask import Flask, jsonify, render_template, redirect, request, url_for
+from flask_sqlalchemy import SQLAlchemy
+from keycloak import KeycloakOpenID
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(24)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-print("Database URL: ", os.getenv("DATABASE_URL"))
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:kali@localhost/irvindb'
 db = SQLAlchemy(app)
-login_manager = LoginManager(app)
-client = WebApplicationClient(os.getenv("CLIENT_ID"))
 
-# Define user loader
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+keycloak_client = KeycloakOpenID(
+    server_url="https://pacer-dev.northgrum.com",
+    client_id="pacer-dev",
+    realm_name="developer",
+    client_secret_key="redhatsso"
+)
 
-# Define a simple User model
-class User(db.Model, UserMixin):
+
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(250), nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+
 
 @app.route('/')
-@login_required
 def index():
-    tables = db.engine.table_names()  # List of all tables in the database
-    return render_template('index.html', tables=tables)
+    return render_template('login.html')
+
 
 @app.route('/login')
 def login():
-    # Keycloak login URL preparation
-    redirect_uri = url_for('login_callback', _external=True)
-    request_uri = client.prepare_request_uri(
-        os.getenv("AUTH_URI"),
-        redirect_uri=redirect_uri,
-        scope=["openid", "profile", "email"]
-    )
-    return redirect(request_uri)
+    return render_template('login.html')
 
-@app.route('/login_callback')
-def login_callback():
-    try:
-        token_response = client.prepare_token_request(
-            os.getenv("TOKEN_URI"),
-            authorization_response=request.url,
-            redirect_uri=url_for('login_callback', _external=True)
-        )
-        token_url, headers, body = token_response
-        token_data = requests.post(token_url, headers=headers, data=body,
-                                   auth=(os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET")), verify=False).json()
+@app.route('/keycloak-login')
+def keycloak_login():
+    well_known = keycloak_client.well_known()
+    print(type(well_known), well_known)  # Add this line for debugging
+    redirect_url = url_for('authorize', _external=True)
+    return redirect(keycloak_client.auth_url(redirect_uri=redirect_url))
 
-        userinfo_response = requests.get(
-            os.getenv("USERINFO_URI"),
-            headers={'Authorization': f"Bearer {token_data['access_token']}"}, verify=False
-        )
-        userinfo = userinfo_response.json()
-    except Exception as e:
-        app.logger.error("Failed to authenticate or fetch user data: %s", str(e))
-        return "Authentication failed", 500
-
-    user = User.query.filter_by(username=userinfo['preferred_username']).first()
-    if not user:
-        user = User(username=userinfo['preferred_username'])
-        db.session.add(user)
-        db.session.commit()
-
-    login_user(user)
-    return redirect(url_for('index'))
-
-    # Use token to get user info
-    userinfo_response = requests.get(
-        os.getenv("USERINFO_URI"),
-        headers={'Authorization': f"Bearer {token_data['access_token']}"}, verify=False
-    )
-    userinfo = userinfo_response.json()
-    user = User.query.filter_by(username=userinfo['preferred_username']).first()
-    if not user:
-        user = User(username=userinfo['preferred_username'])
-        db.session.add(user)
-        db.session.commit()
     
-    login_user(user)  # Log the user in using Flask-Login
-    return redirect(url_for('index'))
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
+@app.route('/authorize', methods=['GET'])
+def authorize():
+    code = request.args.get('code')
+    token = keycloak_client.token(code=code)
+    user_info = keycloak_client.userinfo(token['access_token'])
+    if isinstance(user_info, bytes):
+        user_info = json.loads(user_info.decode('utf-8'))
+    username = user_info['preferred_username']
+    user_id = int(ord(username[0]) - ord('0'))
+    return jsonify({'user_id': user_id})
 
 if __name__ == '__main__':
-    with app.app_context():
-        port = int(os.environ.get('FLASK_PORT', 8080))
-        db.create_all()
-        app.run(port=port, host='0.0.0.0', ssl_context="adhoc")  # SSL context for HTTPS, useful during development
+    port = int(os.environ.get('FLASK_PORT', 8080))
+    app.run(port=port, host='0.0.0.0')
