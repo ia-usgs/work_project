@@ -1,25 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Database Tables</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Table Data</title>
+    <script>
+        function fetchTableData() {
+            fetch('/table_data/users')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#table-body');
+                    tableBody.innerHTML = '';
+
+                    data.forEach(row => {
+                        const tableRow = document.createElement('tr');
+                        Object.values(row).forEach(value => {
+                            const tableCell = document.createElement('td');
+                            tableCell.textContent = value;
+                            tableRow.appendChild(tableCell);
+                        });
+                        tableBody.appendChild(tableRow);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+    </script>
 </head>
 <body>
-    <h1>Database Tables</h1>
+    <h1>Table Data</h1>
+    <button onclick="fetchTableData()">Fetch Data</button>
     <table>
         <thead>
             <tr>
-                <th>Table Name</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
             </tr>
         </thead>
-        <tbody>
-            {% for table in tables %}
-            <tr>
-                <td><a href="{{ url_for('table_detail', table_name=table) }}">{{ table }}</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tbody id="table-body"></tbody>
     </table>
 </body>
 </html>
-
