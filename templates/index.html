@@ -3,26 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
     <title>Table Data</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Table Data</h1>
-    <button onclick="fetchTableData()">Fetch Data</button>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Address</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-            <!-- Table rows will be dynamically inserted here -->
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Table Data</h1>
+        <button class="fetch-button" onclick="fetchTableData()">Fetch Data</button>
+        <div class="table-wrapper">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Address</th>
+                        <th>Salary</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Table rows will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <script>
         function fetchTableData() {
