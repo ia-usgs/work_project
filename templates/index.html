@@ -29,37 +29,19 @@
 
             // Sort the data by id, name, age, address, and salary
             data.sort((a, b) => {
-                if (a.id < b.id) {
-                    return -1;
+                if (a.id !== b.id) {
+                    return a.id - b.id;
                 }
-                if (a.id > b.id) {
-                    return 1;
+                if (a.name !== b.name) {
+                    return a.name.localeCompare(b.name);
                 }
-                if (a.name < b.name) {
-                    return -1;
+                if (a.age !== b.age) {
+                    return a.age - b.age;
                 }
-                if (a.name > b.name) {
-                    return 1;
+                if (a.address !== b.address) {
+                    return a.address.localeCompare(b.address);
                 }
-                if (a.age < b.age) {
-                    return -1;
-                }
-                if (a.age > b.age) {
-                    return 1;
-                }
-                if (a.address < b.address) {
-                    return -1;
-                }
-                if (a.address > b.address) {
-                    return 1;
-                }
-                if (a.salary < b.salary) {
-                    return -1;
-                }
-                if (a.salary > b.salary) {
-                    return 1;
-                }
-                return 0;
+                return a.salary - b.salary;
             });
 
             data.forEach(row => {
