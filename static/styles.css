@@ -1,77 +1,81 @@
+/* General body styles */
 body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f4f4f4;
-  color: #333;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 /* Header styles */
 h1 {
-  color: #333;
+    color: #333;
 }
 
 /* Button styling */
 button {
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin: 20px 0;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
 
 /* Table styling */
 table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow around the table */
 }
 
 th, td {
-  text-align: left;
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
 }
 
 th {
-  background-color: #4CAF50;
-  color: white;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px; /* Larger font size for headers */
 }
 
 tr:nth-child(even) {
-  background-color: #f2f2f2;
+    background-color: #f2f2f2;
 }
 
-/* Table responsive */
+/* Responsive Table Design */
 @media screen and (max-width: 600px) {
-  table, thead, tbody, th, td, tr {
-      display: block;
-  }
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
 
-  th, td {
-      text-align: right;
-  }
+    th, td {
+        text-align: right; /* Align text to right for better visibility on small devices */
+    }
 
-  td {
-      position: relative;
-      padding-left: 50%;
-  }
+    td {
+        position: relative;
+        padding-left: 50%; /* Allows text to not be cramped on the left */
+    }
 
-  td::before {
-      position: absolute;
-      left: 6px;
-      padding-right: 10px;
-      white-space: nowrap;
-      content: attr(data-label);
-  }
+    td::before {
+        position: absolute;
+        left: 6px;
+        padding-right: 10px;
+        white-space: nowrap;
+        content: attr(data-label); /* Show data label before the content for clarity */
+    }
 
-  th::before {
-      content: "";
-  }}
+    th::before {
+        content: ""; /* No content needed before headers */
+    }
+                                                                        }
