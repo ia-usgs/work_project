@@ -27,21 +27,14 @@
             const tableBody = document.querySelector('#table-body');
             tableBody.innerHTML = '';
 
-            // Sort the data by id, name, age, address, and salary
+            // Improved sorting function
             data.sort((a, b) => {
-                if (a.id !== b.id) {
-                    return a.id - b.id;
-                }
-                if (a.name !== b.name) {
-                    return a.name.localeCompare(b.name);
-                }
-                if (a.age !== b.age) {
-                    return a.age - b.age;
-                }
-                if (a.address !== b.address) {
-                    return a.address.localeCompare(b.address);
-                }
-                return a.salary - b.salary;
+                if (a.id !== b.id) return a.id - b.id;
+                if (a.name !== b.name) return a.name.localeCompare(b.name);
+                if (a.age !== b.age) return a.age - b.age;
+                if (a.address !== b.address) return a.address.localeCompare(b.address);
+                if (a.salary !== b.salary) return a.salary - b.salary;
+                return 0;  // All fields are equal
             });
 
             data.forEach(row => {
@@ -54,7 +47,7 @@
                 tableBody.appendChild(tableRow);
             });
         })
-        .catch(error => console.error(error));
+        .catch(error => console.error('Failed to fetch data:', error));
 }
     </script>
 </body>
