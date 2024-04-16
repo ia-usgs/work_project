@@ -50,6 +50,9 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
+    age = db.Column(db.String(50))
+    address = db.Column(db.String(50))
+    salary= db.Column(db.String(50))
 
 
 @app.route('/table_data/users')
@@ -59,7 +62,10 @@ def table_data():
     for user in users:
         table_data.append({
             'id': user.id,
-            'name': user.name
+            'name': user.name, 
+            'age': user.age, 
+            'address': user.address, 
+            'salary': user.salary
         })
     return jsonify(table_data)
 
