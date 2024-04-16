@@ -21,24 +21,59 @@
 
     <script>
         function fetchTableData() {
-            fetch('/table_data/users')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector('#table-body');
-                    tableBody.innerHTML = '';
+    fetch('/table_data/users')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#table-body');
+            tableBody.innerHTML = '';
 
-                    data.forEach(row => {
-                        const tableRow = document.createElement('tr');
-                        Object.entries(row).forEach(([key, value]) => {
-                            const tableCell = document.createElement('td');
-                            tableCell.textContent = value;
-                            tableRow.appendChild(tableCell);
-                        });
-                        tableBody.appendChild(tableRow);
-                    });
-                })
-                .catch(error => console.error(error));
-        }
+            // Sort the data by id, name, age, address, and salary
+            data.sort((a, b) => {
+                if (a.id < b.id) {
+                    return -1;
+                }
+                if (a.id > b.id) {
+                    return 1;
+                }
+                if (a.name < b.name) {
+                    return -1;
+                }
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (a.age < b.age) {
+                    return -1;
+                }
+                if (a.age > b.age) {
+                    return 1;
+                }
+                if (a.address < b.address) {
+                    return -1;
+                }
+                if (a.address > b.address) {
+                    return 1;
+                }
+                if (a.salary < b.salary) {
+                    return -1;
+                }
+                if (a.salary > b.salary) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            data.forEach(row => {
+                const tableRow = document.createElement('tr');
+                Object.entries(row).forEach(([key, value]) => {
+                    const tableCell = document.createElement('td');
+                    tableCell.textContent = value;
+                    tableRow.appendChild(tableCell);
+                });
+                tableBody.appendChild(tableRow);
+            });
+        })
+        .catch(error => console.error(error));
+}
     </script>
 </body>
 </html>
