@@ -2,7 +2,14 @@
 <html>
 <head>
     <title>Table Data</title>
-    <script>
+</head>
+<body>
+    <h1>Table Data</h1>
+    <button onclick="fetchTableData()">Fetch Data</button>
+    <table>
+        <thead>
+            <tr>
+                <script>
         function fetchTableData() {
             fetch('/table_data/users')
                 .then(response => response.json())
@@ -23,13 +30,6 @@
                 .catch(error => console.error(error));
         }
     </script>
-</head>
-<body>
-    <h1>Table Data</h1>
-    <button onclick="fetchTableData()">Fetch Data</button>
-    <table>
-        <thead>
-            <tr>
                 
             </tr>
         </thead>
