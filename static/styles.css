@@ -20,7 +20,7 @@ aside {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 200px; /* Fixed width */
+  width: 100px; /* Fixed width */
 }
 
 aside.collapsed {
