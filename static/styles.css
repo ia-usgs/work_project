@@ -24,7 +24,7 @@ aside {
 }
 
 aside.collapsed {
-  width: 30px; /* Smaller width when collapsed */
+  width: 80px; /* Smaller width when collapsed */
 }
 
 aside nav ul {
