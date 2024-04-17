@@ -3,53 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Table Data</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>User Dashboard</title>
 </head>
 <body>
-    <div class="container">
+
+    <header>
+        <!-- Header content goes here -->
+    </header>
+    <aside>
+        <button id="sidebar-toggle">Toggle Sidebar</button>
+        <nav>
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Orders</a></li>
+                <li><a href="#">Customers</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+            <script>
+            function toggleSidebar() {
+                const sidebar = document.querySelector('aside');
+                sidebar.classList.toggle('collapsed');
+            }</script>
+        </nav>
+    </aside>
+    <main>
+        <h1>Admin Dashboard</h1>
+            <div class="cards">
+                <div class="card">
+                    <h2>Card 1</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div class="card">
+                    <h2>Card 2</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div class="card">
+                    <h2>Card 3</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div class="card">
+                    <h2>Card 4</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+            </div>
         <h1>Table Data</h1>
-        <button class="fetch-button" onclick="fetchTableData()">Fetch Data</button>
-        <div class="table-wrapper">
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Address</th>
-                        <th>Salary</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <!-- Table rows will be dynamically inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <button onclick="fetchTableData()">Fetch Data</button>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Address</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Table rows will be dynamically inserted here -->
+        </tbody>
+    </table>
 
     <script>
-        function fetchTableData() {
-            fetch('/table_data/users')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector('#table-body');
-                    tableBody.innerHTML = ''; // Clear existing data
 
-                    data.forEach(row => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${row.id}</td>
-                            <td>${row.name}</td>
-                            <td>${row.age}</td>
-                            <td>${row.address}</td>
-                            <td>${row.salary}</td>
-                        `;
-                        tableBody.appendChild(tr);
-                    });
-                })
-                .catch(error => console.error('Failed to fetch data:', error));
-        }
+function fetchTableData() {
+    fetch('/table_data/users')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#table-body');
+            tableBody.innerHTML = ''; // Clear existing data
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.name}</td>
+                    <td>${row.age}</td>
+                    <td>${row.address}</td>
+                    <td>${row.salary}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        })
+        .catch(error => console.error('Failed to fetch data:', error));
+}
     </script>
+    </main>
+    <footer>
+        <!-- Footer content goes here -->
+    </footer>
+    
 </body>
 </html>
