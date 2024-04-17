@@ -1,30 +1,92 @@
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
-  padding: 20px;
   background-color: #f4f4f4;
   color: #333;
 }
 
-/* Header styles */
-h1 {
-  color: #333;
-}
-
-/* Button styling */
-button {
+header {
   background-color: #007BFF;
   color: white;
-  border: none;
-  padding: 10px 20px;
-  margin: 20px 0;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  padding: 20px;
+  text-align: center;
 }
 
-button:hover {
-  background-color: #0056b3;
+aside {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 200px; /* Fixed width */
+}
+
+aside.collapsed {
+  width: 80px; /* Smaller width when collapsed */
+}
+
+aside nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+aside nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  display: block;
+}
+
+main {
+  margin-left: 200px; /* Give space for the fixed sidebar */
+  padding: 20px;
+}
+
+.card {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#sidebar-toggle {
+  background-color: transparent;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+#sidebar-toggle:after {
+  content: '\2261'; /* Hamburger icon */
+  display: block;
+}
+
+aside.collapsed #sidebar-toggle:after {
+  content: '\2039'; /* Single left-pointing angle quotation mark */
+}
+
+@media (max-width: 768px) {
+  aside, main {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  aside {
+    position: relative;
+    width: auto;
+  }
+
+  aside.collapsed {
+    width: auto;
+  }
+
+  .card {
+    box-shadow: none;
+  }
 }
 
 /* Table styling */
@@ -32,6 +94,7 @@ table {
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow around the table */
 }
 
 th, td {
@@ -49,61 +112,30 @@ tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-/* Table responsive */
+/* Responsive table design */
 @media screen and (max-width: 600px) {
   table, thead, tbody, th, td, tr {
-      display: block;
+    display: block;
   }
 
   th, td {
-      text-align: right;
+    text-align: right; /* Align text to right for better visibility on small devices */
   }
 
   td {
-      position: relative;
-      padding-left: 50%;
+    position: relative;
+    padding-left: 50%; /* Allows text to not be cramped on the left */
   }
 
   td::before {
-      position: absolute;
-      left: 6px;
-      padding-right: 10px;
-      white-space: nowrap;
-      content: attr(data-label);
+    position: absolute;
+    left: 6px;
+    padding-right: 10px;
+    white-space: nowrap;
+    content: attr(data-label); /* Show data label before the content for clarity */
   }
 
   th::before {
-      content: "";
-  }}
-
-aside.collapsed nav ul li a {
-  display: none;
-}
-
-aside.collapsed #sidebar-toggle::after {
-    content: '\2261';
-}
-
-aside #sidebar-toggle {
-    background-color: transparent;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    font-size: 24px;
-    outline: none;
-    padding: 5px;
-}
-
-@media (max-width: 768px) {
-  aside {
-      width: 80px;
-  }
-
-  aside.collapsed {
-      width: 80px;
-  }
-
-  aside.collapsed #sidebar-toggle::after {
-      content: '\2261';
+    content: ""; /* No content needed before headers */
   }
 }
