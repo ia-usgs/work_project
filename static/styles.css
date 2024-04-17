@@ -1,107 +1,109 @@
-/* General styles */
-body, html {
-  height: 100%;
+body {
+  font-family: 'Arial', sans-serif;
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #e8eff1;
-  color: #5c677d;
-}
-
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.header {
-  text-align: center;
-  padding: 2rem 0;
-}
-
-.fetch-button {
-  background-color: #5c677d;
-  color: #fff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.3rem;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease;
-}
-
-.fetch-button:hover {
-  background-color: #4e5a65;
-}
-
-/* Table styles */
-.styled-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-  font-size: 0.9em;
-}
-
-.styled-table thead tr {
-  background-color: #5c677d;
-  color: #ffffff;
-  text-align: left;
-}
-
-.styled-table th,
-.styled-table td {
-  padding: 1rem;
-  text-align: left;
-}
-
-.styled-table tbody tr {
-  border-bottom: 1px solid #dddddd;
-}
-
-.styled-table tbody tr:nth-of-type(even) {
-  background-color: #f3f7f9;
-}
-
-.styled-table tbody tr:last-of-type {
-  border-bottom: 2px solid #5c677d;
-}
-
-.styled-table tbody tr:hover {
+  padding: 20px;
   background-color: #f4f4f4;
+  color: #333;
 }
 
-/* Responsive design */
-.table-container {
-  overflow-x: auto;
+/* Header styles */
+h1 {
+  color: #333;
 }
 
+/* Button styling */
+button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 20px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Table responsive */
 @media screen and (max-width: 600px) {
-  .styled-table thead {
-    display: none;
+  table, thead, tbody, th, td, tr {
+      display: block;
   }
 
-  .styled-table, .styled-table tbody, .styled-table tr, .styled-table td {
-    display: block;
-    width: 100%;
+  th, td {
+      text-align: right;
   }
 
-  .styled-table tr {
-    margin-bottom: 0.625rem;
+  td {
+      position: relative;
+      padding-left: 50%;
   }
 
-  .styled-table td {
-    text-align: right;
-    padding-left: 50%;
-    text-align: right;
-    position: relative;
+  td::before {
+      position: absolute;
+      left: 6px;
+      padding-right: 10px;
+      white-space: nowrap;
+      content: attr(data-label);
   }
 
-  .styled-table td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 0;
-    width: 50%;
-    padding-left: 1rem;
-    font-weight: bold;
-    text-align: left;
+  th::before {
+      content: "";
+  }}
+
+aside.collapsed nav ul li a {
+  display: none;
+}
+
+aside.collapsed #sidebar-toggle::after {
+    content: '\2261';
+}
+
+aside #sidebar-toggle {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 24px;
+    outline: none;
+    padding: 5px;
+}
+
+@media (max-width: 768px) {
+  aside {
+      width: 80px;
+  }
+
+  aside.collapsed {
+      width: 80px;
+  }
+
+  aside.collapsed #sidebar-toggle::after {
+      content: '\2261';
   }
 }
