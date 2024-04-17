@@ -12,8 +12,7 @@ db = SQLAlchemy(app)
 keycloak_client = KeycloakOpenID(
     server_url="https://keycloak-ekho-sso-dev.apps.ocpshareddev.gc1.myngc.com/auth/",
     client_id="pacer-dev",
-    realm_name="developer",
-    client_secret_key="redhatsso"
+    realm_name="developer"
 )
 
 
