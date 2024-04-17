@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:kali@172.30.203.69/i
 db = SQLAlchemy(app)
 
 keycloak_client = KeycloakOpenID(
-    server_url="https://pacer-dev.northgrum.com",
+    server_url="https://keycloak-ekho-sso-dev.apps.ocpshareddev.gc1.myngc.com/auth/",
     client_id="pacer-dev",
     realm_name="developer",
     client_secret_key="redhatsso"
