@@ -28,15 +28,21 @@ def login():
 
 @app.route('/keycloak-login')
 def keycloak_login():
-    well_known = keycloak_client.well_known()
-    print(type(well_known), well_known)  
     redirect_url = url_for('authorize', _external=True)
-    return redirect(keycloak_client.auth_url(redirect_uri=redirect_url))
+    print("Generated redirect_uri:", redirect_url)  # Debugging output
+    auth_url = keycloak_client.auth_url(redirect_uri=redirect_url)
+    print("Authorization URL:", auth_url)  # Debugging output
+    return redirect(auth_url)
 
     
 
-@app.route('/authorize', methods=['GET'])
+@app.route('/authorize')
 def authorize():
+    error = request.args.get('error')
+    if error:
+        error_description = request.args.get('error_description')
+        return jsonify({'error': error, 'error_description': error_description}), 400
+    code = request.args.get('code')
     code = request.args.get('code')
     token = keycloak_client.token(code=code)
     user_info = keycloak_client.userinfo(token['access_token'])
