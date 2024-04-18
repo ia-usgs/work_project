@@ -29,7 +29,7 @@ def login():
 @app.route('/keycloak-login')
 def keycloak_login():
     well_known = keycloak_client.well_known()
-    print(type(well_known), well_known)  # Add this line for debugging
+    print(type(well_known), well_known)  
     redirect_url = url_for('authorize', _external=True)
     return redirect(keycloak_client.auth_url(redirect_uri=redirect_url))
 
