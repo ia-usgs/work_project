@@ -38,6 +38,21 @@ def keycloak_login():
 
 @app.route('/authorize')
 def authorize():
+    try:
+        code = request.args.get('code')
+        if not code:
+            return jsonify({'error': 'No authorization code provided'}), 400
+
+        print(f"Authorization code received: {code}")
+        token = keycloak_client.token(code=code)
+        print(f"Token received: {token}")
+
+        user_info = keycloak_client.userinfo(token['access_token'])
+        return jsonify(user_info)
+
+    except Exception as e:
+        print(f"Error during token exchange or user info retrieval: {str(e)}")
+        return jsonify({'error': str(e)}), 500
     error = request.args.get('error')
     if error:
         error_description = request.args.get('error_description')
