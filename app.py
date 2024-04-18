@@ -43,7 +43,6 @@ def authorize():
         error_description = request.args.get('error_description')
         return jsonify({'error': error, 'error_description': error_description}), 400
     code = request.args.get('code')
-    code = request.args.get('code')
     token = keycloak_client.token(code=code)
     user_info = keycloak_client.userinfo(token['access_token'])
     if isinstance(user_info, bytes):
