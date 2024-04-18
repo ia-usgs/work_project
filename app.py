@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from keycloak import KeycloakOpenID
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:kali@172.30.203.69/irvindb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:kali@172.30.153.109/irvindb'
 db = SQLAlchemy(app)
 
 keycloak_client = KeycloakOpenID(
