@@ -70,5 +70,5 @@ def table_data():
     return jsonify(table_data)
 
 if __name__ == '__main__':
-    port = int(os.environ.get('FLASK_PORT', 8080))
+    port = int(os.environ.get('FLASK_PORT', 8081))
     app.run(port=port, host='0.0.0.0', debug=True)
