@@ -43,6 +43,13 @@ def authorize():
         if not code:
             return jsonify({'error': 'No authorization code provided'}), 400
 
+         # Exchange the authorization code for a token
+        token_response = keycloak_client.token(code=code)
+        # Assuming token_response is a dict that could have an 'error' key.
+        if 'access_token' not in token_response:
+            print(f"Failed to retrieve access token: {token_response}")
+            return jsonify(token_response), 401
+
         print(f"Authorization code received: {code}")
         token = keycloak_client.token(code=code)
         print(f"Token received: {token}")
