@@ -74,7 +74,6 @@ def authorize():
     return jsonify({'user_id': user_id})
 
 class User(db.Model):
-    class User(db.Model):
     # The __tablename__ attribute sets the name of the database table
     # to 'users'.
     __tablename__ = 'users'
