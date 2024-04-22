@@ -74,12 +74,30 @@ def authorize():
     return jsonify({'user_id': user_id})
 
 class User(db.Model):
+    class User(db.Model):
+    # The __tablename__ attribute sets the name of the database table
+    # to 'users'.
     __tablename__ = 'users'
+
+    # The 'id' column is the primary key of the 'users' table.
+    # It is an integer column.
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    age = db.Column(db.String(50))
-    address = db.Column(db.String(50))
-    salary= db.Column(db.String(50))
+
+    # The 'name' column stores the name of the user.
+    # It is a string column with a maximum length of 50 characters.
+    name = db.Column(db.String(50), doc="Name of the user.")
+
+    # The 'age' column stores the age of the user.
+    # It is a string column with a maximum length of 50 characters.
+    age = db.Column(db.String(50), doc="Age of the user.")
+
+    # The 'address' column stores the address of the user.
+    # It is a string column with a maximum length of 50 characters.
+    address = db.Column(db.String(50), doc="Address of the user.")
+
+    # The 'salary' column stores the salary of the user.
+    # It is a string column with a maximum length of 50 characters.
+    salary = db.Column(db.String(50), doc="Salary of the user.")
 
 
 @app.route('/table_data/users')
